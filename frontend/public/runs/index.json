@@ -1,0 +1,59 @@
+[
+  {
+    "id": "fastapi-jwt",
+    "title": "FastAPI service with JWT authentication",
+    "outcome": "completed",
+    "model": "gemini-3.5-flash-lite",
+    "duration_seconds": 186,
+    "description": "Create a FastAPI application with JWT authentication, PostgreSQL integration, user registration, login, logout and unit tests.",
+    "highlights": [
+      "49 model calls",
+      "2 debugging passes",
+      "clean-install verification caught an undeclared dependency",
+      "executor refused an undeclared install",
+      "8 tests pass"
+    ]
+  },
+  {
+    "id": "follow-up",
+    "title": "Extending an existing codebase",
+    "outcome": "completed",
+    "model": "gemini-3.5-flash-lite",
+    "duration_seconds": 210,
+    "description": "Add a third strategy, fixed window, that follows the existing interface and conventions, and a small command-line demo. Add tests for the new strategy. (Starts from the rate limiter the previous task produced.)",
+    "highlights": [
+      "planner read 9 files before planning",
+      "6 files changed, existing code kept",
+      "16 tests pass",
+      "51 model calls"
+    ]
+  },
+  {
+    "id": "rate-limiter",
+    "title": "Rate limiter library from an empty repository",
+    "outcome": "completed",
+    "model": "gemini-3.5-flash-lite",
+    "duration_seconds": 206,
+    "description": "Write a rate limiter library in Python with two strategies, token bucket and sliding window, behind one clean interface. Time must be injectable so tests do not sleep. Include thorough unit tests.",
+    "highlights": [
+      "13 files written",
+      "a flaky concurrency test found and fixed in 2 debugging passes",
+      "11 tests pass",
+      "61 model calls"
+    ]
+  },
+  {
+    "id": "budget-stop",
+    "title": "A run that did not converge, stopped by its budget",
+    "outcome": "failed",
+    "model": "gemini-3.5-flash-lite",
+    "duration_seconds": 288,
+    "description": "The same FastAPI task, recorded earlier. The debugger was shown only the end of a 115 KB test log, which hid the real error; it used all three attempts, review sent the work back, and the 90-call budget ended the run. The work was still exported. This recording led to the failure digest the system uses now.",
+    "highlights": [
+      "3 debugging attempts, all verified as failing",
+      "stopped at 90 of 90 model calls",
+      "failed work still archived",
+      "the bug it exposed is fixed"
+    ]
+  }
+]

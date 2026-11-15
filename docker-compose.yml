@@ -1,0 +1,74 @@
+# Local stack. `docker compose up -d postgres redis egress-proxy` is enough for development
+# (API and web app run from source); `docker compose --profile app up --build` runs everything.
+name: codepilot
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: codepilot
+      POSTGRES_PASSWORD: codepilot
+      POSTGRES_DB: codepilot
+    ports: ["127.0.0.1:5434:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U codepilot"]
+      interval: 3s
+      retries: 20
+
+  redis:
+    image: redis:7.4-alpine
+    ports: ["127.0.0.1:6380:6379"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      retries: 20
+
+  # The sandboxes' only route out: forwards to package registries, refuses everything else.
+  # It sits on both networks; sandboxes sit on `sandbox` only, and only during an install.
+  egress-proxy:
+    build: ./sandbox/egress-proxy
+    image: codepilot-egress-proxy:latest
+    networks: [sandbox, default]
+    restart: unless-stopped
+
+  # Builds the sandbox image; it is not a running service.
+  sandbox-image:
+    build: ./sandbox/image
+    image: codepilot-sandbox:latest
+    profiles: [build]
+
+  api:
+    build: ./backend
+    profiles: [app]
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_URL: postgresql+asyncpg://codepilot:codepilot@postgres:5432/codepilot
+      REDIS_URL: redis://redis:6379/0
+      CORS_ORIGINS: http://localhost:5173
+    ports: ["127.0.0.1:8000:8000"]
+    volumes:
+      # The control plane starts sandboxes through the daemon. This socket is mounted here
+      # and nowhere else: never into a sandbox.
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      egress-proxy: {condition: service_started}
+
+  web:
+    build: ./frontend
+    profiles: [app]
+    ports: ["127.0.0.1:5173:80"]
+    depends_on: [api]
+
+networks:
+  # internal: Docker gives this network no gateway to the outside.
+  sandbox:
+    name: codepilot-sandbox
+    internal: true
+
+volumes:
+  pgdata:

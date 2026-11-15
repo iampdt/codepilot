@@ -1,0 +1,11 @@
+{
+  // The public demo: static files only. It replays recorded runs, so there is no Worker
+  // code, no backend and nothing that can execute a visitor's input.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "codepilot",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  }
+}

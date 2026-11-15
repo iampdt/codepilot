@@ -1,0 +1,64 @@
+[project]
+name = "codepilot"
+version = "0.1.0"
+description = "Autonomous coding agent with an isolated execution sandbox"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi==0.163.1",
+    "uvicorn[standard]==0.54.0",
+    "pydantic==2.14.3",
+    "pydantic-settings==2.16.3",
+    "sqlalchemy[asyncio]==2.1.8",
+    "asyncpg==0.32.0",
+    "alembic==1.20.1",
+    "redis==8.1.0",
+    "httpx==0.28.1",
+    "structlog==26.1.0",
+    "python-multipart==0.0.33",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==9.2.0",
+    "pytest-asyncio==1.5.0",
+    "ruff==0.17.5",
+    "mypy==2.4.1",
+]
+
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+asyncio_default_test_loop_scope = "session"
+testpaths = ["tests"]
+markers = [
+    "docker: needs a Docker daemon and the sandbox image (deselect with -m 'not docker')",
+    "live: calls a real model provider (needs GEMINI_API_KEY and CODEPILOT_LIVE_TESTS=1)",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "ASYNC", "S"]
+ignore = ["S101", "S603", "S607", "S108", "S105", "ASYNC109"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S", "E501", "ASYNC221", "SIM115"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+known-third-party = ["alembic"]
+
+[tool.mypy]
+python_version = "3.12"
+plugins = ["pydantic.mypy"]
+strict = true
+files = ["app"]
