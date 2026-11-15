@@ -163,7 +163,8 @@ Running from source, tests and other models: [docs/development.md](docs/developm
 | Uploads | Zip slip, symlinks, zip bombs, an uploaded `.git` |
 | API | State changes, the event stream with replay, export |
 
-`ruff` and `mypy --strict` are clean.
+`ruff` and `mypy --strict` are clean. `scripts/check.sh` runs all of it, the Docker tests
+included, and a pre-push hook runs that script before every push.
 
 ## Limits
 
@@ -182,7 +183,7 @@ Running from source, tests and other models: [docs/development.md](docs/developm
 ## Stack
 
 Python 3.12 · FastAPI · Pydantic · SQLAlchemy · PostgreSQL · Redis · Docker · React ·
-TypeScript · Tailwind CSS · Monaco · Server-Sent Events · Gemini API · GitHub Actions ·
+TypeScript · Tailwind CSS · Monaco · Server-Sent Events · Gemini API ·
 Cloudflare Workers (demo)
 
 ## License

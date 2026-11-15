@@ -29,6 +29,23 @@ compose --profile app up --build`, then open <http://localhost:5173>.
 
 ## Checks
 
+One command runs everything, including the tests against a real sandbox. It starts the
+services it needs, creates the test database and builds the sandbox image if they are missing:
+
+```bash
+scripts/check.sh            # --fast skips the Docker sandbox tests
+```
+
+The checks run on the machine that pushes, not on a hosted runner: the sandbox tests need a
+Docker daemon either way. Enable the pre-push hook once per clone and every `git push` runs
+the script first (`git push --no-verify` skips it):
+
+```bash
+git config core.hooksPath .githooks
+```
+
+The same steps by hand:
+
 ```bash
 cd backend
 .venv/bin/ruff format --check . && .venv/bin/ruff check .
